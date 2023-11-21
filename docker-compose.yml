@@ -34,7 +34,13 @@ services:
                       python manage.py makemigrations &&  
                       python manage.py migrate && 
                       python manage.py runserver 0.0.0.0:8000"
-
+  frontend:
+    container_name: reactapp
+    build: ./front_end
+    volumes:
+      - ./front_end:/react
+    ports:
+      - '9000:9000'
 volumes:
   postgres-data:
     driver: local
