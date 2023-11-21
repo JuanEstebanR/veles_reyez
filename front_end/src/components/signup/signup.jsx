@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState } from "react";
-import "./signup.css";
 import { Link } from "react-router-dom";
 
 function Signup() {
@@ -16,6 +15,7 @@ function Signup() {
   const sendForm = async (e) => {
     e.preventDefault();
     try {
+        setData({ username: "", password: "" })
       const response = await axios.post(
         "http://localhost:8000/googletopterms/register/",
         { username: data.username, password: data.password },
@@ -35,22 +35,23 @@ function Signup() {
             fontWeight: "bold",
             color: "#C292FF",
             flex: "auto",
+              fontFamily: "Railway",
           }}
         >
           GOOGLE TOP TERMS
         </h1>
       </div>
-      <div>
+      <div style={{ marginTop: "60px"}}>
         <form onSubmit={sendForm}>
           <div style={{ marginBottom: "10px", marginTop: "20px" }}>
             <input
               type="text"
               placeholder="Enter Username"
               style={{
-                height: "40px",
-                width: "60%",
-                backgroundColor: "#F2F2F2",
-                color: "black",
+                  height: "30px",
+                  width: "60%",
+                  backgroundColor: "#F2F2F2",
+                  color: "black",
               }}
               value={data.username}
               onChange={handleUsernameChange}
@@ -62,10 +63,10 @@ function Signup() {
               type="password"
               placeholder="Password"
               style={{
-                height: "40px",
-                width: "60%",
-                color: "#C292FF",
-                backgroundColor: "#F2F2F2",
+                  height: "30px",
+                  width: "60%",
+                  backgroundColor: "#F2F2F2",
+                  color: "black",
               }}
               value={data.password}
               onChange={handlePasswordChange}
@@ -89,7 +90,7 @@ function Signup() {
           </div>
         </form>
         <div style={{ marginTop: "10px" }}>
-          <p style={{ color: "white" }}>
+          <p style={{ color: "white", fontFamily: "Railway" }}>
             Do you have an account?{" "}
             <Link to="/signin" style={{ color: "#C292FF" }}>
               Sign In

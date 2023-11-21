@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import "./signin.css";
-import { Link, BrowserRouter, Route } from "react-router-dom";
-import Signup from "../signup/signup.jsx";
+import { Link } from "react-router-dom";
 function Signin() {
   const [data, setData] = useState({ username: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,10 +14,12 @@ function Signin() {
   const sendForm = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
+        setData({ username: "", password: "" })
+        const response = await axios.post(
         "http://localhost:8000/googletopterms/login/",
         { username: data.username, password: data.password },
       );
+
     } catch (err) {
       console.log(err);
     }
@@ -28,14 +28,14 @@ function Signin() {
     <div
       style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}
     >
-      <div>
+      <div style={{marginTop: "60px"}}>
         <h1
           style={{
             fontSize: 80,
             fontWeight: "bold",
             color: "#C292FF",
-            flex: "auto",
-            marginTop: "40px",
+            marginTop: "20px",
+              fontFamily: "Railway",
           }}
         >
           GOOGLE TOP TERMS
@@ -43,17 +43,17 @@ function Signin() {
       </div>
       <div>
         <div>
-          <h1 style={{ color: "white", fontSize: "50px", fontWeight: "bold" }}>
+          <h1 style={{ color: "white", fontSize: "40px", fontWeight: "bold", fontFamily: "Railway", }}>
             Welcome Again
           </h1>
         </div>
         <form onSubmit={sendForm}>
-          <div style={{ marginBottom: "10px", marginTop: "20px" }}>
+          <div style={{ marginBottom: "10px", marginTop: "10px" }}>
             <input
               type="text"
               placeholder="Enter Username"
               style={{
-                height: "40px",
+                height: "30px",
                 width: "60%",
                 backgroundColor: "#F2F2F2",
                 color: "black",
@@ -68,7 +68,7 @@ function Signin() {
               type="password"
               placeholder="Password"
               style={{
-                height: "40px",
+                height: "30px",
                 width: "60%",
                 color: "#C292FF",
                 backgroundColor: "#F2F2F2",
@@ -95,7 +95,7 @@ function Signin() {
           </div>
         </form>
         <div style={{ marginTop: "10px" }}>
-          <p style={{ color: "white" }}>
+          <p style={{ color: "white", fontFamily: "Railway", }}>
             Dont have an account?{" "}
             <Link to="/signup" style={{ color: "#C292FF" }}>
               Create One
