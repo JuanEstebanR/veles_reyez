@@ -43,53 +43,76 @@ const Dashboard = () => {
             });
   }
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "30px", alignItems: "start"}}>
-        <form onSubmit={handleSubmit}>
-            <div style={{ width: "50%" }}>
-                <select
-                    style={{backgroundColor: "black", color: "white", height: "30px", width: "300px", marginRight: "10px"}}
-                    value={table} // Valor seleccionado
-                    onChange={handleTableChange} // Manejar el cambio de selección
-                    className="form-select"
-                    aria-label="Default select example"
-                >
-                    <option value="">Choose a Table</option>
-                    <option value="top_25_terms">Top 25 terms U.S.</option>
-                    <option value="top_25_rising_terms">Top 25 rising terms U.S.</option>
-                    <option value="top_25_international_terms">International Top terms</option>
-                    <option value="top_25_international_rising_terms">International Rising Terms</option>
-                    <option value="top_terms_international_country">Internationale Top One</option>
-                </select>
-            </div>
-            <div style={{padding: "10px"}}>
-                <CountryDropdown style={{ backgroundColor: "black", color: "white", height: "30px",
-                    width: "150px", marginRight: "10px" }}
-                                 value={country} onChange={(val) => setCountry(val)}  showDefaultOption={false}
-                                 whitelist={list} disabled={table === "top_25_terms" || table === "top_25_rising_terms"} />
-                <RegionDropdown style={{ backgroundColor: "black", color: "white", height: "30px",
-                    width: "150px", marginRight: "10px" }}
-                                country={country} value={region} onChange={(val) => setRegion(val)}/>
-            </div>
-            <div style={{padding: "10px"}}>
-                <label style={{padding:"20px"}} htmlFor="customRange1" className="form-label">{limit}</label>
-                <input style={{width:"200px"}} type="range" value={limit || 0}
-                       onChange={(val) => {setLimit(val.target.value)}}
-                       className="form-range" id="customRange1" min="0" max="25"/>
-            </div>
-            <div style={{padding: "10px"}}>
-                <label htmlFor="customInterval" className="form-label">Number of days before today {" "}</label>
-                <input type="number"
-                       value={interval || 2} onChange={(val) => {setInterval(val.target.value)}}
-                       className="form-control" id="customInterval" min="2" max="25"/>
-            </div>
-            <div style={{padding: "10px"}}>
-                <button type="submit" className="btn btn-primary">Submit</button>
-</div>
-        </form>
-        <div style={{ width: "120%", height: "500px", backgroundColor: "lightgray"}}>
-            {/* Área de gráficos o contenido grande */}
-        </div>
-    </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "30px", alignItems: "start" }}>
+          <div style={{ textAlign: "left" }}>
+              <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+                  <div>
+                      <select
+                          style={{ backgroundColor: "black", color: "white", height: "30px", width: "100%", marginRight: "10px" }}
+                          value={table}
+                          onChange={handleTableChange}
+                          className="form-select"
+                          aria-label="Default select example"
+                      >
+                          <option value="">Choose a Table</option>
+                          <option value="top_25_terms">Top 25 terms U.S.</option>
+                          <option value="top_25_rising_terms">Top 25 rising terms U.S.</option>
+                          <option value="top_25_international_terms">International Top terms</option>
+                          <option value="top_25_international_rising_terms">International Rising Terms</option>
+                          <option value="top_terms_international_country">Internationale Top One</option>
+                      </select>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
+                      <CountryDropdown
+                          style={{ backgroundColor: "black", color: "white", height: "30px", width: "50%", marginRight: "10px" }}
+                          value={country}
+                          onChange={(val) => setCountry(val)}
+                          showDefaultOption={false}
+                          whitelist={list}
+                          disabled={table === "top_25_terms" || table === "top_25_rising_terms"}
+                      />
+                      <RegionDropdown
+                          style={{ backgroundColor: "black", color: "white", height: "30px", width: "50%" }}
+                          country={country}
+                          value={region}
+                          onChange={(val) => setRegion(val)}
+                      />
+                  </div>
+                  <div style={{ marginTop: "10px" }}>
+                      <label htmlFor="customRange1" className="form-label">{limit}</label>
+                      <input
+                          type="range"
+                          value={limit || 0}
+                          onChange={(val) => {setLimit(val.target.value)}}
+                          className="form-range"
+                          id="customRange1"
+                          min="0"
+                          max="25"
+                          style={{ width: "100%" }}
+                      />
+                  </div>
+                  <div style={{ marginTop: "10px" }}>
+                      <label htmlFor="customInterval" className="form-label">Number of days before today</label>
+                      <input
+                          type="number"
+                          value={interval || 2}
+                          onChange={(val) => {setInterval(val.target.value)}}
+                          className="form-control"
+                          id="customInterval"
+                          min="2"
+                          max="25"
+                          style={{ width: "100%" }}
+                      />
+                  </div>
+                  <div style={{ marginTop: "20px" }}>
+                      <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>Submit</button>
+                  </div>
+              </form>
+          </div>
+          <div style={{ height: "600px", width:"800px", backgroundColor: "lightgray", overflow: "hidden" }}>
+              {/* Área de gráficos o contenido grande */}
+          </div>
+      </div>
   );
 };
 export default Dashboard;
