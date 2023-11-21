@@ -10,10 +10,11 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)  # Lanza una excepción si no es válido
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer = self.get_serializer(data=request.data["data"])
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response({"user": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"user": serializer.data}, status=status.HTTP_201_CREATED)
 
 
 class UserLoginView(generics.ListCreateAPIView):
