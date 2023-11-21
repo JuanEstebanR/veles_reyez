@@ -1,18 +1,28 @@
 import { useState } from "react";
 import axios from "axios";
 import { CountryDropdown, RegionDropdown} from "react-country-region-selector";
+import InfoChart from "../chart/chart.jsx";
 
 const Dashboard = () => {
-    const base_url = (table_name)  => `http://localhost:8000/googletopterms/${table_name}/`;
-      const list = ["CL", "AR", "US", "CO", "BR", "UR", "MX",
-                            "AL", "AF","BE", "CA", "DE", "AT", "AU", "BR", "DK", "ES",
-                              "FI", "PH", "FR", "IN","HU", "HK", "IT", "JP", "UA", "TW", "SE", "RU","PT",
-                            "GB", "PE"]
-      const [country, setCountry] = useState("");
-      const [region, setRegion] = useState("");
-      const [limit, setLimit] = useState(0);
-      const [interval, setInterval] = useState(2);
-      const [table, setTable] = useState("");
+    const data = (data, value) => {
+        let dataChart = [];
+        data.forEach((element) => {
+            dataChart.push(element[value]);
+        });
+        return dataChart;
+    };
+    const list = ["CL", "AR", "US", "CO", "BR", "UR", "MX",
+                        "AL", "AF","BE", "CA", "DE", "AT", "AU", "BR", "DK", "ES",
+                          "FI", "PH", "FR", "IN","HU", "HK", "IT", "JP", "UA", "TW", "SE", "RU","PT",
+                        "GB", "PE"]
+    const [dataReady, setDataReady] = useState(false);
+    const [country, setCountry] = useState("");
+    const [region, setRegion] = useState("");
+    const [limit, setLimit] = useState(1);
+    const [interval, setInterval] = useState(2);
+    const [table, setTable] = useState("");
+    const [labels, setLabels] = useState([]);
+    const [dataValues, setDataValues] = useState([]);
   const handleTableChange = (event) => {
       console.log(event.target.value)
     setTable(event.target.value); // Actualizar el estado con el valor seleccionado
@@ -22,25 +32,38 @@ const Dashboard = () => {
   };
   const handleSubmit = async (event) => {
       event.preventDefault();
-      console.log(country, region, limit, interval, table)
+      setDataReady(false)
+      setLabels([])
+      setDataValues([])
+
+      const base_url = (endpoint)  => `http://localhost:8000/googletopterms/${endpoint}/`;
+      let endpoint;
+      if(table === "top_25_terms" || table === "top_25_rising_terms"){
+          endpoint = "top_25_terms"
+      }else if (table === "top_25_international_terms" || table === "top_25_international_rising_terms"){
+          endpoint = "top_25_international_terms"
+      }
+
       const formData = {
             country_name: country,
-            dma_name: region,
             limit: limit,
             interval: interval,
             table_name: table
       };
-            await axios.post(base_url(table), {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            }).then((response) => {
-                console.log(response);
-            }).catch((error) => {
-                console.log(error);
-            });
+      try {
+          const response = await axios.post(base_url(endpoint), {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: formData,
+          })
+            setDataReady(true);
+            setLabels(data(response.data, "term"));
+            setDataValues(data(response.data, "avg_score"));
+      }catch (error) {
+            console.log(error);
+      }
   }
   return (
       <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "30px", alignItems: "start" }}>
@@ -59,34 +82,27 @@ const Dashboard = () => {
                           <option value="top_25_rising_terms">Top 25 rising terms U.S.</option>
                           <option value="top_25_international_terms">International Top terms</option>
                           <option value="top_25_international_rising_terms">International Rising Terms</option>
-                          <option value="top_terms_international_country">Internationale Top One</option>
                       </select>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
                       <CountryDropdown
-                          style={{ backgroundColor: "black", color: "white", height: "30px", width: "50%", marginRight: "10px" }}
-                          value={country}
+                          style={{ backgroundColor: "black", color: "white", height: "30px", width: "100%" }}
+                          value={country || "United States"}
                           onChange={(val) => setCountry(val)}
                           showDefaultOption={false}
                           whitelist={list}
                           disabled={table === "top_25_terms" || table === "top_25_rising_terms"}
-                      />
-                      <RegionDropdown
-                          style={{ backgroundColor: "black", color: "white", height: "30px", width: "50%" }}
-                          country={country}
-                          value={region}
-                          onChange={(val) => setRegion(val)}
                       />
                   </div>
                   <div style={{ marginTop: "10px" }}>
                       <label htmlFor="customRange1" className="form-label">{limit}</label>
                       <input
                           type="range"
-                          value={limit || 0}
+                          value={limit || 1}
                           onChange={(val) => {setLimit(val.target.value)}}
                           className="form-range"
                           id="customRange1"
-                          min="0"
+                          min="1"
                           max="25"
                           style={{ width: "100%" }}
                       />
@@ -109,8 +125,10 @@ const Dashboard = () => {
                   </div>
               </form>
           </div>
-          <div style={{ height: "600px", width:"800px", backgroundColor: "lightgray", overflow: "hidden" }}>
-              {/* Área de gráficos o contenido grande */}
+          <div style={{ height: "420px", width:"800px", backgroundColor: "lightgray", overflow: "hidden" }}>
+              {dataReady && <InfoChart title={table}
+                                       labels={labels}
+                                       data={dataValues} />}
           </div>
       </div>
   );
