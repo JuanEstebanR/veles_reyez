@@ -63,7 +63,7 @@ def top_25_terms_and_rising(table_name: str, interval: int):
     This function returns the query for the top terms based in the U.S.
     :return:
     """
-    if table_name == 'top_terms':
+    if table_name == 'top_25_terms':
         raw_query = query['top_25_terms']
     else:
         raw_query = query['top_25_rising_terms']
@@ -84,7 +84,7 @@ def top_25_international_terms_and_rising(table_name: str, country_name: str,
     This function returns the query for the top international terms based country name.
     :return:
     """
-    if table_name == 'international_top_terms':
+    if table_name == 'top_25_international_terms':
         raw_query = query['top_25_international_terms']
     else:
         raw_query = query['top_25_international_rising_terms']
@@ -93,7 +93,7 @@ def top_25_international_terms_and_rising(table_name: str, country_name: str,
         query_parameters=[
             bigquery.ScalarQueryParameter("interval", "INT64", interval),
             bigquery.ScalarQueryParameter("country_name", "STRING",
-                                          country_name.strip().capitalize()),
+                                          country_name),
         ]
     )
     query_job = client.query(raw_query, job_config=job_config)
