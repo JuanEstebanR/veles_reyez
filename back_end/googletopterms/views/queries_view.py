@@ -5,7 +5,7 @@ from googletopterms.serializers import queriesSerializer, commentSerializer
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+import json
 
 # List all queries that are public for community
 class QueriesAPIView(generics.ListAPIView):
@@ -28,8 +28,10 @@ class MyQueriesAPIView(generics.ListCreateAPIView):
         return user_queries
 
     def post(self, request, username=None, *args, **kwargs):
+        data = json.loads(request.data["body"])
+        username = data.get("username")
         user = get_user_by_username(username)
-        mutable_data = request.data.copy()
+        mutable_data = data.copy()
         mutable_data['user'] = user.id
         serializer = self.get_serializer(data=mutable_data)
         serializer.is_valid(raise_exception=True)
@@ -62,8 +64,10 @@ class CommentCreateAPIView(generics.CreateAPIView):
     def post(self, request, pk=None, *args, **kwargs):
         query = self.get_queryset().filter(id=pk).first()
         if query:
-            user = get_user_by_username(request.data['user'])
-            mutable_data = request.data.copy()
+            data = json.loads(request.data["body"])
+            username = data.get("username")
+            user = get_user_by_username(username)
+            mutable_data = data.copy()
             mutable_data['query'] = query.id
             mutable_data['user'] = user.id
             serializer = self.get_serializer(data=mutable_data)

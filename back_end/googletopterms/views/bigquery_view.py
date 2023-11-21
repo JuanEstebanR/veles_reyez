@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from ..googleapi.querybuilder import (top_25_terms_and_rising,
                                       top_25_international_terms_and_rising,
                                       top_international_terms)
-
+import json
 
 class Top25TermsAPIView(generics.ListAPIView):
     def post(self, request):
@@ -14,10 +14,13 @@ class Top25TermsAPIView(generics.ListAPIView):
         From U.S.
         """
         try:
-            interval = request.data['interval']
-            table_name = request.data['table_name']
+            data = json.loads(request.data["body"])
+            interval = data.get("interval")
+            table_name = data.get("table_name")
+            print(interval, table_name)
             raw_query, data = top_25_terms_and_rising(table_name, interval)
-            return Response(data, status=status.HTTP_200_OK)
+            print(raw_query, data)
+            return Response(data, content_type='application/json', status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -25,13 +28,15 @@ class Top25TermsAPIView(generics.ListAPIView):
 class InternationalTopTermsAPIView(generics.ListAPIView):
     def post(self, request):
         try:
-            interval = request.data['interval']
-            table_name = request.data['table_name']
-            country_name = request.data['country_name']
+            data = json.loads(request.data["body"])
+            interval = data.get("interval")
+            table_name = data.get("table_name")
+            country_name = data.get("country_name")
+            print(interval, table_name, country_name)
             raw_query, data = top_25_international_terms_and_rising(table_name,
                                                                     country_name,
                                                                     interval)
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(data, content_type="application/json" ,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -40,9 +45,11 @@ class InternationalTopTermsAPIView(generics.ListAPIView):
 class InternationalTopOneTermsAPIView(generics.ListAPIView):
     def post(self, request):
         try:
-            interval = request.data['interval']
+            data = json.loads(request.data["body"])
+            interval = data.get("interval")
             raw_query, data = top_international_terms(interval)
-            return Response(data, status=status.HTTP_200_OK)
+            return Response(data, content_type="application/json",
+                            status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
