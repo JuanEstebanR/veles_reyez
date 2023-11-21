@@ -8,7 +8,7 @@ def get_user_by_username(username):
 
 
 def user_authenticated(request):
-    username = request.data["data"]['username']
-    password = request.data["data"]['password']
+    username = request.data["body"]['username']
+    password = request.data["body"]['password']
     user = authenticate(request, username=username, password=password)
     return user

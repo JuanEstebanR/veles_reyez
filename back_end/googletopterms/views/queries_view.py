@@ -28,8 +28,8 @@ class MyQueriesAPIView(generics.ListCreateAPIView):
         return user_queries
 
     def post(self, request, username=None, *args, **kwargs):
-        data = json.loads(request.data["body"])
-        username = data.get("username")
+        data = request.data["body"]
+        username = data["username"]
         user = get_user_by_username(username)
         mutable_data = data.copy()
         mutable_data['user'] = user.id
@@ -64,8 +64,8 @@ class CommentCreateAPIView(generics.CreateAPIView):
     def post(self, request, pk=None, *args, **kwargs):
         query = self.get_queryset().filter(id=pk).first()
         if query:
-            data = json.loads(request.data["body"])
-            username = data.get("username")
+            data = request.data["body"]
+            username = data["username"]
             user = get_user_by_username(username)
             mutable_data = data.copy()
             mutable_data['query'] = query.id

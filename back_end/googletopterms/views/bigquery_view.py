@@ -14,12 +14,12 @@ class Top25TermsAPIView(generics.ListAPIView):
         From U.S.
         """
         try:
-            data = json.loads(request.data["body"])
-            interval = data.get("interval")
-            table_name = data.get("table_name")
+            data = request.data["body"]
+            interval = data["interval"]
+            limit = data["limit"]
+            table_name = data["table_name"]
             print(interval, table_name)
-            raw_query, data = top_25_terms_and_rising(table_name, interval)
-            print(raw_query, data)
+            raw_query, data = top_25_terms_and_rising(table_name, interval, limit)
             return Response(data, content_type='application/json', status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -28,14 +28,16 @@ class Top25TermsAPIView(generics.ListAPIView):
 class InternationalTopTermsAPIView(generics.ListAPIView):
     def post(self, request):
         try:
-            data = json.loads(request.data["body"])
-            interval = data.get("interval")
-            table_name = data.get("table_name")
-            country_name = data.get("country_name")
+            data = request.data["body"]
+            interval = data["interval"]
+            table_name = data["table_name"]
+            country_name = data["country_name"]
+            limit = data["limit"]
             print(interval, table_name, country_name)
             raw_query, data = top_25_international_terms_and_rising(table_name,
                                                                     country_name,
-                                                                    interval)
+                                                                    interval,
+                                                                    limit)
             return Response(data, content_type="application/json" ,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)},
@@ -45,9 +47,10 @@ class InternationalTopTermsAPIView(generics.ListAPIView):
 class InternationalTopOneTermsAPIView(generics.ListAPIView):
     def post(self, request):
         try:
-            data = json.loads(request.data["body"])
-            interval = data.get("interval")
-            raw_query, data = top_international_terms(interval)
+            data = request.data["body"]
+            interval = data["interval"]
+            limit = data["limit"]
+            raw_query, data = top_international_terms(interval, limit)
             return Response(data, content_type="application/json",
                             status=status.HTTP_200_OK)
         except Exception as e:

@@ -14,9 +14,9 @@ urlpatterns = [
     path('community_queries/', QueriesAPIView.as_view(), name='community_queries'),
     path('query_comment/<int:pk>/', CommentCreateAPIView.as_view(), name='query_comment'),
     path('top_25_terms/', Top25TermsAPIView.as_view(), name='top_25_terms'),
-    path('international_top_terms/', InternationalTopTermsAPIView.as_view(),
+    path('top_25_international_terms/', InternationalTopTermsAPIView.as_view(),
          name='International_top_terms'),
-    path('international_top_one_terms/', InternationalTopOneTermsAPIView.as_view(),
+    path('top_terms_international_country/', InternationalTopOneTermsAPIView.as_view(),
          name='International_top_one_terms'),
 ]
 

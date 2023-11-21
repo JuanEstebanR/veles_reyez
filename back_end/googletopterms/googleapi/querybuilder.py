@@ -58,28 +58,26 @@ def convert_to_json(result):
     return json_string
 
 
-def top_25_terms_and_rising(table_name: str, interval: int):
+def top_25_terms_and_rising(table_name: str, interval: int, limit: int):
     """
     This function returns the query for the top terms based in the U.S.
     :return:
     """
+    parameters = [bigquery.ScalarQueryParameter("interval", "INT64", interval),
+                  bigquery.ScalarQueryParameter("limit", "INT64", limit),]
     if table_name == 'top_25_terms':
         raw_query = query['top_25_terms']
     else:
         raw_query = query['top_25_rising_terms']
 
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter("num", "INT64", interval),
-        ]
-    )
+    job_config = bigquery.QueryJobConfig(query_parameters=parameters)
     query_job = client.query(raw_query, job_config=job_config)
     data = data_cleaning_top_terms_and_rising(query_job.result())
     return raw_query, convert_to_json(data)
 
 
 def top_25_international_terms_and_rising(table_name: str, country_name: str,
-                                          interval: int):
+                                          interval: int, limit: int):
     """
     This function returns the query for the top international terms based country name.
     :return:
@@ -94,6 +92,7 @@ def top_25_international_terms_and_rising(table_name: str, country_name: str,
             bigquery.ScalarQueryParameter("interval", "INT64", interval),
             bigquery.ScalarQueryParameter("country_name", "STRING",
                                           country_name),
+            bigquery.ScalarQueryParameter("limit", "INT64", limit),
         ]
     )
     query_job = client.query(raw_query, job_config=job_config)
@@ -101,7 +100,7 @@ def top_25_international_terms_and_rising(table_name: str, country_name: str,
     return raw_query, data
 
 
-def top_international_terms(interval: int):
+def top_international_terms(interval: int, limit: int):
     """
     This function returns the query for the top 1 for each country in the
     international terms.
@@ -111,6 +110,7 @@ def top_international_terms(interval: int):
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ScalarQueryParameter("interval", "INT64", interval),
+            bigquery.ScalarQueryParameter("limit", "INT64", limit),
         ]
     )
     query_job = client.query(raw_query, job_config=job_config)
