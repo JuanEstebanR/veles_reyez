@@ -22,4 +22,4 @@ for a term in the search bar and see the results in the table.
 - query the top 25 terms for a brief countries in the world
 
 
-## [Video] https://youtu.be/ncA67DhsL
+# [Video] https://youtu.be/ncA67DhsL_A?si=XgYWCbOgZSMuGvVL
